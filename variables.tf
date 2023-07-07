@@ -39,6 +39,7 @@ variable "tls" {
 }
 variable "annotations" {
   description = "(Optional) Custom Annotations"
+  type        = map(string)
   default     = null
 }
 variable "ingress_class_name" {
