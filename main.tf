@@ -12,14 +12,14 @@ resource "kubernetes_ingress_v1" "ingress" {
     dynamic "rule" {
       for_each = var.rule
       content {
-        host = "${lookup(rule.value, "sub_domain", "")}${lookup(rule.value, "domain", var.domain_name)}"
+        host = "${rule.value.sub_domain}${rule.value.domain == null ? var.domain_name : rule.value.domain}"
         http {
           path {
-            path      = lookup(rule.value, "path", null)
-            path_type = lookup(rule.value, "path_type", var.path_type)
+            path      = rule.value.path
+            path_type = rule.value.path_type == null ? var.path_type : rule.value.path_type
             backend {
               service {
-                name = lookup(rule.value, "service_name", var.service_name)
+                name = rule.value.service_name == null ? var.service_name : rule.value.service_name
                 port {
                   number = rule.value.external_port
                 }
@@ -59,12 +59,12 @@ resource "kubernetes_ingress" "ingress" {
     dynamic "rule" {
       for_each = var.rule
       content {
-        host = "${lookup(rule.value, "sub_domain", "")}${lookup(rule.value, "domain", var.domain_name)}"
+        host = "${rule.value.sub_domain}${rule.value.domain == null ? var.domain_name : rule.value.domain}"
         http {
           path {
-            path      = lookup(rule.value, "path", null)
+            path = rule.value.path
             backend {
-              service_name = lookup(rule.value, "service_name", var.service_name)
+              service_name = rule.value.service_name == null ? var.service_name : rule.value.service_name
               service_port = rule.value.external_port
             }
           }

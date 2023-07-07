@@ -17,6 +17,14 @@ variable "service_namespace" {
   description = "(Required) Namespace where located service"
 }
 variable "rule" {
+  type = list(object({
+    domain        = optional(string)
+    sub_domain    = optional(string, "")
+    path          = optional(string)
+    path_type     = optional(string)
+    service_name  = optional(string)
+    external_port = number
+  }))
   description = "(Required) External Service port, ingress will redirect request to this service port.  Also could add subdomain ( example: subdomain.domainname.com). And path for access ( example: domain.com/path ). And redefine domain."
 }
 variable "domain_name" {
@@ -40,7 +48,11 @@ variable "ingress_class_name" {
 }
 variable "tls_hosts" {
   description = "(Optional) Enable https traffic & and include SSL Certificate with hosts match"
-  default     = []
+  type        = list(object({
+    secret_name = optional(string)
+    hosts       = list(string)
+  }))
+  default = []
 }
 variable "path_type" {
   description = "Path type for ingress rule"
